@@ -13,6 +13,8 @@ export const DEFAULT_LOG_LEVEL = LogLevel.WARN;
 
 export const DEFAULT_URL = 'env(DATABASE_URL)';
 
+export const DEFAULT_KEY = 'env(DATABASE_KEY)';
+
 export const LOG_LEVEL_NAMES = [
   'silent',
   'info',

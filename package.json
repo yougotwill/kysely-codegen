@@ -41,7 +41,7 @@
     "@types/node": "^18.15.5",
     "@types/pg": "^8.6.6",
     "@typescript-eslint/parser": "^5.56.0",
-    "better-sqlite3": "^8.2.0",
+    "better-sqlite3": "github:oxen-io/session-better-sqlite3#af47530acea25800d22b5e1ae834b709d2bfca40",
     "eslint": "^8.36.0",
     "kysely": "^0.23.5",
     "mysql2": "^2.3.3",
@@ -51,7 +51,6 @@
     "typescript": "^5.0.2"
   },
   "peerDependencies": {
-    "better-sqlite3": ">=7.6.2",
     "kysely": ">=0.19.12",
     "mysql2": "^2.3.3 || ^3.0.0",
     "pg": "^8.8.0"

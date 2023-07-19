@@ -11,12 +11,14 @@ const MYSQL_URI_CONNECTION_STRING_REGEXP = /^mysqlx?:\/\//;
 
 export type ParseConnectionStringOptions = {
   connectionString: string;
+  connectionKey?: string;
   dialectName?: DialectName;
   logger?: Logger;
 };
 
 export type ParsedConnectionString = {
   connectionString: string;
+  connectionKey?: string;
   inferredDialectName: DialectName;
 };
 
@@ -37,55 +39,69 @@ export class ConnectionStringParser {
     return 'sqlite';
   }
 
-  parse(options: ParseConnectionStringOptions): ParsedConnectionString {
-    let connectionString = options.connectionString;
+  parseOptionsString(inputString: string, logger?: Logger) {
+    const expressionMatch = inputString.match(CALL_STATEMENT_REGEXP);
 
-    const expressionMatch = connectionString.match(CALL_STATEMENT_REGEXP);
-
-    if (expressionMatch) {
-      const name = expressionMatch[1]!;
-
-      if (name !== 'env') {
-        throw new ReferenceError(`Function '${name}' is not defined.`);
-      }
-
-      const keyToken = expressionMatch[2]!;
-      let key;
-
-      try {
-        key = keyToken.includes('"') ? JSON.parse(keyToken) : keyToken;
-      } catch {
-        throw new SyntaxError(
-          `Invalid connection string: '${connectionString}'`,
-        );
-      }
-
-      if (typeof key !== 'string') {
-        throw new TypeError(
-          `Parameter 0 of function '${name}' must be a string.`,
-        );
-      }
-
-      loadEnv();
-
-      options.logger?.info('Loaded environment variables from .env file.');
-
-      const envConnectionString = process.env[key];
-      if (!envConnectionString) {
-        throw new ReferenceError(
-          `Environment variable '${key}' could not be found.`,
-        );
-      }
-
-      connectionString = envConnectionString;
+    if (!expressionMatch) {
+      return inputString;
     }
+
+    const name = expressionMatch[1]!;
+
+    if (name !== 'env') {
+      throw new ReferenceError(`Function '${name}' is not defined.`);
+    }
+
+    const keyToken = expressionMatch[2]!;
+    let key;
+
+    try {
+      key = keyToken.includes('"') ? JSON.parse(keyToken) : keyToken;
+    } catch {
+      throw new SyntaxError(`Invalid connection string: '${inputString}'`);
+    }
+
+    if (typeof key !== 'string') {
+      throw new TypeError(
+        `Parameter 0 of function '${name}' must be a string.`,
+      );
+    }
+
+    loadEnv();
+
+    logger?.info(`Using ${key} from .env file.`);
+
+    const envConnectionString = process.env[key];
+    if (!envConnectionString) {
+      throw new ReferenceError(
+        `Environment variable '${key}' could not be found.`,
+      );
+    }
+
+    return envConnectionString;
+  }
+
+  parse(options: ParseConnectionStringOptions): ParsedConnectionString {
+    const connectionString = this.parseOptionsString(
+      options.connectionString,
+      options.logger,
+    );
 
     const inferredDialectName =
       options.dialectName ?? this.#inferDialectName(connectionString);
 
-    return {
+    const parsed: ParsedConnectionString = {
       connectionString,
       inferredDialectName,
     };
+
+    if (options.connectionKey) {
+      parsed.connectionKey = this.parseOptionsString(
+        options.connectionKey,
+        options.logger,
+      );
+    }
+
+    return parsed;
   }
 }

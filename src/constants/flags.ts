@@ -1,4 +1,9 @@
-import { DEFAULT_OUT_FILE, DEFAULT_URL, VALID_DIALECTS } from './constants';
+import {
+  DEFAULT_KEY,
+  DEFAULT_OUT_FILE,
+  DEFAULT_URL,
+  VALID_DIALECTS,
+} from './constants';
 
 export type Flag = {
   description: string;
@@ -57,6 +62,12 @@ export const FLAGS: Flag[] = [
       'Set the database connection string URL. ' +
       `This may point to an environment variable. (default: ${DEFAULT_URL})`,
     longName: 'url',
+  },
+  {
+    description:
+      'Set the SQLCipher database key. ' +
+      `This may point to an environment variable. (default: ${DEFAULT_KEY})`,
+    longName: 'key',
   },
   {
     description: 'Set the default schema of the database connection.',

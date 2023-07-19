@@ -5,6 +5,7 @@ import { TableMatcher } from './table-matcher';
 
 export type ConnectOptions = {
   connectionString: string;
+  connectionKey?: string;
   dialect: Dialect;
 };
 
@@ -28,6 +29,7 @@ export abstract class Introspector<DB> {
     for (const ssl of [true, false]) {
       try {
         const dialect = await options.dialect.createKyselyDialect({
+          connectionKey: options.connectionKey,
           connectionString: options.connectionString,
           ssl,
         });

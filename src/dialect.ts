@@ -4,6 +4,7 @@ import { Introspector } from './introspector';
 
 export type CreateKyselyDialectOptions = {
   connectionString: string;
+  connectionKey?: string;
   ssl?: boolean;
 };
 

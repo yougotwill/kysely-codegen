@@ -1,6 +1,7 @@
 import minimist from 'minimist';
 import { ConnectionStringParser } from './connection-string-parser';
 import {
+  DEFAULT_KEY,
   DEFAULT_LOG_LEVEL,
   DEFAULT_OUT_FILE,
   DEFAULT_URL,
@@ -24,6 +25,7 @@ export type CliOptions = {
   schema: string | undefined;
   typeOnlyImports: boolean;
   url: string;
+  key?: string;
 };
 
 export type LogLevelName = typeof LOG_LEVEL_NAMES[number];
@@ -43,8 +45,9 @@ export class Cli {
     const logger = new Logger(options.logLevel);
 
     const connectionStringParser = new ConnectionStringParser();
-    const { connectionString, inferredDialectName } =
+    const { connectionString, connectionKey, inferredDialectName } =
       connectionStringParser.parse({
+        connectionKey: options.key ? options.key : DEFAULT_KEY || undefined,
         connectionString: options.url ?? DEFAULT_URL,
         dialectName: options.dialectName,
         logger,
@@ -62,6 +65,7 @@ export class Cli {
     );
 
     const db = await dialect.introspector.connect({
+      connectionKey,
       connectionString,
       dialect,
     });
@@ -155,14 +159,15 @@ export class Cli {
       argv['type-only-imports'] ?? true,
     );
     const url = (argv.url as string) ?? DEFAULT_URL;
+    const key = argv.key ? (argv.key as string) : DEFAULT_KEY || undefined;
 
     try {
-      for (const key in argv) {
+      for (const arg in argv) {
         if (
-          key !== '_' &&
-          !FLAGS.some((flag) => [flag.longName, flag.shortName].includes(key))
+          arg !== '_' &&
+          !FLAGS.some((flag) => [flag.longName, flag.shortName].includes(arg))
         ) {
-          throw new RangeError(`Invalid flag: "${key}"`);
+          throw new RangeError(`Invalid flag: "${arg}"`);
         }
       }
 
@@ -206,6 +211,7 @@ export class Cli {
       dialectName,
       excludePattern,
       includePattern,
+      key,
       logLevel,
       outFile,
       print,

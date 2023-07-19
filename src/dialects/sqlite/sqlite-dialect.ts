@@ -10,8 +10,19 @@ export class SqliteDialect extends Dialect {
   async createKyselyDialect(options: CreateKyselyDialectOptions) {
     const { default: Database } = await import('better-sqlite3');
 
+    const database = new Database(options.connectionString);
+
+    if (options.connectionKey) {
+      // make sure the key is a hex string
+      const key = /[^0-9A-Fa-f]/.test(options.connectionKey)
+        ? `'${options.connectionKey}'`
+        : `"x'${options.connectionKey}'"`;
+
+      database.pragma(`key = ${key}`);
+    }
+
     return new KyselySqliteDialect({
-      database: new Database(options.connectionString),
+      database,
     });
   }
 }
