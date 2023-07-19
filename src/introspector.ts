@@ -1,4 +1,4 @@
-import { Kysely, sql } from 'kysely';
+import { Kysely, TableMetadata, sql } from 'kysely';
 import { Dialect } from './dialect';
 import { DatabaseMetadata } from './metadata';
 import { TableMatcher } from './table-matcher';
@@ -53,7 +53,9 @@ export abstract class Introspector<DB> {
     throw new Error('Failed to connect to database.');
   }
 
-  protected async getTables(options: IntrospectOptions<DB>) {
+  protected async getTables(
+    options: IntrospectOptions<DB>,
+  ): Promise<TableMetadata[]> {
     let tables = await options.db.introspection.getTables();
 
     if (options.includePattern) {
