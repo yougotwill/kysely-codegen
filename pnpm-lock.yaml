@@ -53,8 +53,8 @@ devDependencies:
     specifier: ^8.36.0
     version: 8.36.0
   kysely:
-    specifier: ^0.23.5
-    version: 0.23.5
+    specifier: ^0.26.1
+    version: 0.26.1
   mysql2:
     specifier: ^2.3.3
     version: 2.3.3
@@ -1971,8 +1971,8 @@ packages:
       object.assign: 4.1.4
     dev: true
 
-  /kysely@0.23.5:
-    resolution: {integrity: sha512-TH+b56pVXQq0tsyooYLeNfV11j6ih7D50dyN8tkM0e7ndiUH28Nziojiog3qRFlmEj9XePYdZUrNJ2079Qjdow==}
+  /kysely@0.26.1:
+    resolution: {integrity: sha512-FVRomkdZofBu3O8SiwAOXrwbhPZZr8mBN5ZeUWyprH29jzvy6Inzqbd0IMmGxpd4rcOCL9HyyBNWBa8FBqDAdg==}
     engines: {node: '>=14.0.0'}
     dev: true
 

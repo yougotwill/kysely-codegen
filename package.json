@@ -43,7 +43,7 @@
     "@typescript-eslint/parser": "^5.56.0",
     "better-sqlite3": "github:oxen-io/session-better-sqlite3#af47530acea25800d22b5e1ae834b709d2bfca40",
     "eslint": "^8.36.0",
-    "kysely": "^0.23.5",
+    "kysely": "^0.26.1",
     "mysql2": "^2.3.3",
     "pg": "^8.10.0",
     "pnpm": "^7.30.0",
